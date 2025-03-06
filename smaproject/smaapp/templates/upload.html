@@ -3,69 +3,106 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <!-- Fix the viewport to prevent unwanted scaling -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Upload PDFs - EduGraph</title>
     <style>
+        /* Modern Color Palette */
+        :root {
+            --primary: #6366f1;
+            --secondary: #3b82f6;
+            --accent: #10b981;
+            --dark: #1e293b;
+            --light: #f8fafc;
+        }
+
+        /* Base Styles */
         body {
-            background-color: #080d1a;
-            color: white;
-            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--dark) 0%, #0f172a 100%);
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            height: 100vh;
-            margin: 0;
-            overflow: hidden;
+            justify-content: center;
+            padding: 2rem;
+            color: var(--light);
             position: relative;
+            overflow: hidden;
+            font-family: 'Poppins', sans-serif;
         }
-        .background-animation {
-            position: absolute;
-            width: 100%;
-            height: 100%;
+
+        /* Animated Gradient Background */
+        .gradient-background {
+            position: fixed;
             top: 0;
             left: 0;
-            background: radial-gradient(circle, rgba(0,212,255,0.3) 10%, rgba(91,110,255,0.2) 50%, rgba(0,10,50,0.9) 100%);
-        }
-        .particles {
-            position: absolute;
             width: 100%;
             height: 100%;
+            background: linear-gradient(135deg, #0f172a, #1e293b, #334155);
+            z-index: -2;
+            animation: gradientAnimation 10s ease infinite;
+        }
+
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Particle Canvas */
+        #particle-canvas {
+            position: fixed;
             top: 0;
             left: 0;
-            pointer-events: none;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
         }
-        .particle {
+
+        /* Floating Shapes */
+        .floating-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .floating-shapes div {
             position: absolute;
-            width: 6px;
-            height: 6px;
-            background: #00d4ff;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.2);
             border-radius: 50%;
-            opacity: 0.7;
-            animation: floatParticles 8s infinite linear;
+            animation: float 10s infinite ease-in-out;
         }
-        @keyframes floatParticles {
-            0% {
-                transform: translateY(0) translateX(0);
-                opacity: 0.8;
-            }
-            100% {
-                transform: translateY(-100vh) translateX(30vw);
-                opacity: 0;
-            }
+
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+            100% { transform: translateY(0) rotate(360deg); }
         }
+
+        /* Container Styles */
         .container {
-            background: rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.1);
             padding: 30px;
             border-radius: 20px;
-            box-shadow: 0 0 40px rgba(0, 212, 255, 0.8);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
             text-align: center;
             width: 450px;
             position: relative;
             z-index: 1;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
+
+        .container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 212, 255, 0.6);
+        }
+
         h1 {
             font-size: 32px;
             color: #00d4ff;
@@ -74,6 +111,7 @@
             letter-spacing: 2px;
             margin-bottom: 20px;
         }
+
         input, button {
             width: 100%;
             padding: 15px;
@@ -83,15 +121,18 @@
             font-size: 16px;
             transition: all 0.3s ease-in-out;
         }
+
         input {
             background: rgba(255, 255, 255, 0.2);
             color: white;
             outline: none;
         }
+
         input:focus {
             background: rgba(255, 255, 255, 0.3);
             box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
         }
+
         button {
             background: linear-gradient(90deg, #5b6eff, #00d4ff);
             color: white;
@@ -99,6 +140,7 @@
             font-weight: bold;
             cursor: pointer;
         }
+
         button:hover {
             opacity: 0.85;
             transform: scale(1.05);
@@ -107,22 +149,13 @@
     </style>
 </head>
 <body>
-    <div class="background-animation"></div>
-    <div class="particles"></div>
-    <script>
-        function createParticles() {
-            const particlesContainer = document.querySelector('.particles');
-            for (let i = 0; i < 80; i++) {
-                const particle = document.createElement('div');
-                particle.classList.add('particle');
-                particle.style.left = Math.random() * 100 + 'vw';
-                particle.style.top = Math.random() * 100 + 'vh';
-                particle.style.animationDuration = (Math.random() * 5 + 6) + 's';
-                particlesContainer.appendChild(particle);
-            }
-        }
-        createParticles();
-    </script>
+    <div class="gradient-background"></div>
+    <div class="floating-shapes">
+        <div style="width: 200px; height: 200px; top: 10%; left: 5%; animation-duration: 15s;"></div>
+        <div style="width: 150px; height: 150px; top: 60%; left: 80%; animation-duration: 12s;"></div>
+        <div style="width: 100px; height: 100px; top: 30%; left: 50%; animation-duration: 10s;"></div>
+    </div>
+    <canvas id="particle-canvas"></canvas>
     
     <div class="container">
         <h1>EduGraph</h1>
@@ -132,5 +165,95 @@
             <button type="submit">Generate Insights</button>
         </form>
     </div>
+
+    <script>
+        // Particle Animation
+        class Particle {
+            constructor(canvas, ctx) {
+                this.canvas = canvas;
+                this.ctx = ctx;
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.velocity = {
+                    x: (Math.random() - 0.5) * 0.5,
+                    y: (Math.random() - 0.5) * 0.5
+                };
+                this.radius = Math.random() * 1.5 + 1;
+                this.color = `rgba(99, 102, 241, ${Math.random() * 0.5 + 0.2})`;
+                this.glow = Math.random() * 2 + 1;
+            }
+
+            draw() {
+                this.ctx.beginPath();
+                this.ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                this.ctx.fillStyle = this.color;
+                this.ctx.shadowBlur = this.glow;
+                this.ctx.shadowColor = this.color;
+                this.ctx.fill();
+            }
+
+            update() {
+                this.x += this.velocity.x;
+                this.y += this.velocity.y;
+
+                if (this.x < 0 || this.x > this.canvas.width) this.velocity.x *= -1;
+                if (this.y < 0 || this.y > this.canvas.height) this.velocity.y *= -1;
+
+                this.draw();
+            }
+        }
+
+        // Initialize Canvas
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // Create Particles
+        const particles = [];
+        const particleCount = Math.floor((canvas.width * canvas.height) / 10000);
+
+        for (let i = 0; i < particleCount; i++) {
+            particles.push(new Particle(canvas, ctx));
+        }
+
+        // Animation Loop
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw connections
+            particles.forEach((particle, index) => {
+                for (let j = index; j < particles.length; j++) {
+                    const dx = particle.x - particles[j].x;
+                    const dy = particle.y - particles[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < 100) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(99, 102, 241, ${1 - distance/100})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.moveTo(particle.x, particle.y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+                particle.update();
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        // Resize Handler
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            particles.forEach(particle => {
+                particle.x = Math.random() * canvas.width;
+                particle.y = Math.random() * canvas.height;
+            });
+        });
+    </script>
 </body>
 </html>
